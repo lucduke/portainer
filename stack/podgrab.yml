@@ -16,7 +16,7 @@ services:
       - nfs_config:/config
       - nfs_assets:/assets
     ports:
-      - ${port}:8080 # Modifier à 7080 car mon port 8080 est déjà utilisé
+      - ${port}:8080
     restart: unless-stopped
     networks:
       - frontend

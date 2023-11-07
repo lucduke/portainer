@@ -76,7 +76,7 @@ services:
       - ${portMosquitto}:1883
     restart: unless-stopped
     networks:
-      - frontend1
+      - frontend
       - backend
 
 volumes:

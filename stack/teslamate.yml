@@ -116,4 +116,4 @@ networks:
   frontend:
     external: true
   backend:
-    external: truee
+    external: true

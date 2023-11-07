@@ -1,0 +1,119 @@
+version: "3.8"
+
+services:
+
+  teslamate:
+    image: teslamate/teslamate:latest
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      - ENCRYPTION_KEY=${encryptionKey}
+      - DATABASE_USER=${databaseUser}
+      - DATABASE_PASS=${databasePass}
+      - DATABASE_NAME=${databaseName}
+      - DATABASE_HOST=database
+      - MQTT_HOST=mosquitto 
+    volumes:
+      - nfs_import:/opt/app/import
+    ports:
+      - ${portTeslamate}:4000
+    restart: unless-stopped
+    cap_drop:
+      - all
+    networks:
+      - frontend
+      - backend
+
+  database:
+    image: postgres:13
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      - POSTGRES_USER=${databaseUser}
+      - POSTGRES_PASSWORD=${databasePass}
+      - POSTGRES_DB=teslamate
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - backend
+
+  grafana:
+    image: teslamate/grafana:latest
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      - DATABASE_USER=${databaseUser}
+      - DATABASE_PASS=${databasePass}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=database
+    volumes:
+      - nfs_grafana-data:/var/lib/grafana
+    ports:
+      - ${portGrafana}:3000
+    restart: unless-stopped
+    networks:
+      - frontend
+      - backend
+
+  mosquitto:
+    image: eclipse-mosquitto:1.6
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    volumes:
+      - nfs_mosquitto-conf:/mosquitto/config
+      - nfs_mosquitto-data:/mosquitto/data
+      - nfs_mosquitto-log:/mosquitto/log
+    ports:
+      - ${portMosquitto}:1883
+    restart: unless-stopped
+    networks:
+      - frontend
+      - backend
+
+volumes:
+  db:
+  nfs_import:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_import}
+  nfs_grafana-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_grafana-data}
+  nfs_mosquitto-conf:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_mosquitto-conf}
+  nfs_mosquitto-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_mosquitto-data}
+  nfs_mosquitto-log:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_mosquitto-log}
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

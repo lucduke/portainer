@@ -1,0 +1,10 @@
+# Fichiers temporaires
+*.swp
+*~
+
+# Répertoires et fichiers générés par des outils de développement
+.env
+
+
+# Fichiers et répertoires spécifiques à des éditeurs de code
+.vscode/

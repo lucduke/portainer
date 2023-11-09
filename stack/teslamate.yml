@@ -92,25 +92,25 @@ volumes:
     driver_opts:
       type: nfs
       o: addr=${address},rw,soft,nfsvers=4
-      device: ${nfs_grafana}
+      device: ${nfs_grafanaData}
   nfs_mosquitto-conf:
     driver: local
     driver_opts:
       type: nfs
       o: addr=${address},rw,soft,nfsvers=4
-      device: ${nfs_mosquitto-conf}
+      device: ${nfs_mosquittoConf}
   nfs_mosquitto-data:
     driver: local
     driver_opts:
       type: nfs
       o: addr=${address},rw,soft,nfsvers=4
-      device: ${nfs_mosquitto-data}
+      device: ${nfs_mosquittoData}
   nfs_mosquitto-log:
     driver: local
     driver_opts:
       type: nfs
       o: addr=${address},rw,soft,nfsvers=4
-      device: ${nfs_mosquitto-log}
+      device: ${nfs_mosquittoLog}
 
 networks:
   frontend:

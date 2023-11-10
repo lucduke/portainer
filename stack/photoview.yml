@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  photoview-db:
+    container_name: photoview-db
+    image: mariadb:10.5
+    restart: unless-stopped
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      - MYSQL_DATABASE=${databaseName}
+      - MYSQL_USER=${databaseUser}
+      - MYSQL_PASSWORD=${databasePassword}
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - backend
+
+  photoview:
+    container_name: photoview-app
+    image: viktorstrate/photoview
+    restart: unless-stopped
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    ports:
+      - ${port}:80
+    depends_on:
+      - photoview-db
+    environment:
+      - PHOTOVIEW_DATABASE_DRIVER=mysql
+      - PHOTOVIEW_MYSQL_URL=${databaseUser}:${databasePassword}@tcp(photoview-db)/${databaseName}
+      - PHOTOVIEW_LISTEN_IP=photoview
+      - PHOTOVIEW_LISTEN_PORT=80
+      - PHOTOVIEW_MEDIA_CACHE=/app/cache
+    volumes:
+      - nfs_cache:/app/cache
+      - nfs_photos:/photos:ro
+    networks:
+      - frontend
+      - backend
+
+volumes:
+  db:
+  nfs_cache:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_cache}
+  nfs_photos:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_photos}
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

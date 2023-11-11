@@ -10,7 +10,7 @@ services:
       - diun.enable=true
       - com.centurylinklabs.watchtower.enable=true
     environment:
-      - SIGNUPS_ALLOWED=true
+      - SIGNUPS_ALLOWED=${signupsAllowed}
     volumes:
       - nfs_data:/data/
     ports:

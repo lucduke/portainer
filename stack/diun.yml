@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+
+  diun:
+    container_name: diun
+    image: crazymax/diun:latest
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    command: serve
+    environment:
+      - TZ=Europe/Paris
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DIUN_WATCH_WORKERS=${watchWorkersNumber}
+      - DIUN_WATCH_SCHEDULE=${watchSchedule}
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_REGOPTS_0_NAME=${registryName}
+      - DIUN_REGOPTS_0_SELECTOR=${registrySelector}
+      - DIUN_REGOPTS_0_USERNAME=${registryUsername}
+      - DIUN_REGOPTS_0_PASSWORD=${registryPassword}
+    volumes:
+      - nfs_data:/data
+      - nfs_etc:/etc/diun
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - frontend
+
+volumes:
+  nfs_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_data}
+  nfs_etc:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_etc}
+
+networks:
+  frontend:
+    external: true

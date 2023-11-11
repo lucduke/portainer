@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  heimdall:
+    container_name: heimdall
+    image: lscr.io/linuxserver/heimdall:latest
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - nfs_config:/config
+    ports:
+      - ${portHttp}:80
+      - ${portHttps}:443
+    restart: unless-stopped
+    networks:
+      - frontend
+
+volumes:
+  nfs_config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_config}
+
+networks:
+  frontend:
+    external: true

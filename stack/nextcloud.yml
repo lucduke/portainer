@@ -56,7 +56,6 @@ volumes:
       o: addr=${address},rw,soft,nfsvers=4
       device: ${path_nfs_app}
   db:
-    external: true
 
 networks:
   frontend:

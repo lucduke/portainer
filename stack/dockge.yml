@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   dockge:
+    container_name: dockge
     image: louislam/dockge:1
     labels:
       - deunhealth.restart.on.unhealthy=true
@@ -18,9 +19,6 @@ services:
       # If you want to use private registries, you need to share the auth file with Dockge:
       # - /root/.docker/:/root/.docker
       # Stacks Directory
-      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
-      # ⚠️ 1. FULL path only. No relative path (MUST)
-      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
       - nfs_stacks:/opt/stacks
     restart: unless-stopped
     networks:

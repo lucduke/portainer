@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  dockge:
+    image: louislam/dockge:1
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+      - diun.enable=true
+      - com.centurylinklabs.watchtower.enable=true
+    environment:
+      # Tell Dockge where is your stacks directory
+      - DOCKGE_STACKS_DIR=/opt/stacks
+    ports:
+      # Host Port : Container Port
+      - ${port}:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - nfs_data:/app/data
+      # If you want to use private registries, you need to share the auth file with Dockge:
+      # - /root/.docker/:/root/.docker
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - nfs_stacks:/opt/stacks
+    restart: unless-stopped
+    networks:
+      - frontend
+
+volumes:
+  nfs_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_data}
+  nfs_stacks:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_stacks}
+
+networks:
+  frontend:
+    external: true

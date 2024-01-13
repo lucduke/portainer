@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  gotify:
+    container_name: gotify
+    restart: unless-stopped
+    image: gotify/server
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    ports:
+      - ${port}:80
+    environment:
+      - GOTIFY_DEFAULTUSER_PASS=${password}
+      - TZ="Europe/Paris"
+    volumes:
+      - nfs_data:/app/data
+    networks:
+      - frontend
+      - backend
+volumes:
+  nfs_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${address},rw,soft,nfsvers=4
+      device: ${path_nfs_data}
+networks:
+  backend:
+    external: true
+  frontend:
+    external: true

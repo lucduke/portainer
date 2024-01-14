@@ -9,6 +9,7 @@ services:
     ports:
       - ${port}:80
     environment:
+      - GOTIFY_DEFAULTUSER_NAME=${username}
       - GOTIFY_DEFAULTUSER_PASS=${password}
       - TZ="Europe/Paris"
     volumes:

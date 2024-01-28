@@ -6,7 +6,7 @@ Lien vers le site web : <https://gotify.net/>
 
 ## Installation
 
-Lien vers la vidéo Youtube : <https://>
+Lien vers la vidéo Youtube : <https://youtu.be/oLLd_B7jnqw>
 
 ### Prérequis : création du répertoire NFS dans lequel nous stockerons les data de l'application
 

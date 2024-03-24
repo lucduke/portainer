@@ -16,6 +16,9 @@ services:
       - MYSQL_HOST=nextcloud-db
       - OVERWRITEPROTOCOL=https #pour permettre le bon fonctionnement du client Windows/Linux
       - NEXTCLOUD_TRUSTED_DOMAINS=${trustedDomains}
+      - PHP_MEMORY_LIMIT=1024M
+      - PHP_MAX_EXECUTION_TIME=300
+      - PHP_UPLOAD_LIMIT=512M
     volumes:
       - nfs_app:/var/www/html
       - ${path_mountpoint_documents}:/smb-documents:ro

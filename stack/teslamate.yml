@@ -27,7 +27,7 @@ services:
       - backend
 
   database:
-    image: postgres:13
+    image: postgres:17
     labels:
       - deunhealth.restart.on.unhealthy=true
       - diun.enable=true
@@ -63,7 +63,7 @@ services:
       - backend
 
   mosquitto:
-    image: eclipse-mosquitto:1.6
+    image: eclipse-mosquitto:2
     labels:
       - deunhealth.restart.on.unhealthy=true
       - diun.enable=true
